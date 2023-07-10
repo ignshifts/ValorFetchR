@@ -20,12 +20,12 @@ I created this Project because I used to use an app very similar to this, the ap
 Below are a list of major things I plan on adding to the project or are currently in development alongside bugs that can affect the experience of the app / project.
 
 ### 🆕Upcoming Features
-- [ ] Show Peak Ranks
-- [ ] Show Party Queue
-- [ ] View Equipped Cosmetics
+- [ ] [Show Peak Ranks](https://github.com/ignshifts/ValorFetchR/issues/1)
+- [ ] [Show Party Queue](https://github.com/ignshifts/ValorFetchR/issues/2)
+- [ ] [View Equipped Cosmetics](https://github.com/ignshifts/ValorFetchR/issues/5)
 
 ### 🐛Major Bugs
-- [ ] PUUID being in other fields.
+- [ ] [PUUID being in other fields.](https://github.com/ignshifts/ValorFetchR/issues/11)
 
 *There are WAY more things but these are just the major ones, you can view the entire list from the [Issues](https://github.com/ignshifts/ValorFetchR/issues) tab.*
 
