@@ -13,6 +13,12 @@
 ## 📝Contributions
 If you would like to contribute to this project, you can but they more than likely will not be accepted as of right now because I plan on restructing the entire project because it just a big mess and very difficult to understand.
 
+## 🐜 Bug Reports
+Please keep in mind there are a decent amount of bugs within this project but it is very much usable. If you get a error message, you can simply just close the program and reopen it, it will work fine. If you would like to help me debug this entire project it would be very much appreciated if you could create a [Issue](https://github.com/ignshifts/ValorFetchR/issues), with the full stack trace of the error or even a screenshot that just shows the relevant error that would be fine. Please make sure that you mention what happened before the error happened so I can effectively reproduce it and resolve it. You can also report the error privately in the project support server.
+
+### 🆘Support Server
+> https://discord.gg/39dfGrYNf9
+
 ## Reason for Creating this Project
 I created this Project because I used to use an app very similar to this, the app is called VRY (Valorant Rank Yoinker). The app worked fine and did everything that this project does but I constantly faced issues where the app would not open at times and took too long to display the data. This project now displays the data almost instantly and would open 9/10 times, the slight factor where it does not open is due to a bug.
 
