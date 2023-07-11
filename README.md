@@ -30,7 +30,7 @@ Below are a list of major things I plan on adding to the project or are currentl
 *There are WAY more things but these are just the major ones, you can view the entire list from the [Issues](https://github.com/ignshifts/ValorFetchR/issues) tab.*
 
 ## 🔨 Bannable?
-This project does probably two things Riot may not like which is displaying the hidden names of users in Streamer Mode & showing what side you will be on from Agent Select. Nonetheless, it's very unlikely you will get banned for this because these are not really advantageous things and are stuff you will end up finding out later. I'm going to say it's not bannable but use at your own risk.
+This project does TWO things Riot may not like which is displaying the hidden names of users in Streamer Mode & showing what side you will be on from Agent Select. Nonetheless, it's very unlikely you will get banned for this because these are not really advantageous things and are stuff you will end up finding out later. If you obviously say a hidden persons name in chat you may get banned but you should have enough common sense to not do that. Other than that I'm going to say it's not bannable but use at your own risk.
 
 ### ✨Fun Fact: This is my 3rd time making this project again! The other times I have gotten close to doing it but I gave up due to how stressful it was to test everything but I decided to stop being lazy.✨
 
