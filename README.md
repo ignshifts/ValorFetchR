@@ -16,7 +16,7 @@ If you would like to contribute to this project, you can but they more than like
 ## 🐜 Bug Reports
 Please keep in mind there are a decent amount of bugs within this project but it is very much usable. If you get a error message, you can simply just close the program and reopen it, it will work fine. If you would like to help me debug this entire project it would be very much appreciated if you could create a [Issue](https://github.com/ignshifts/ValorFetchR/issues), with the full stack trace of the error or even a screenshot that just shows the relevant error that would be fine. Please make sure that you mention what happened before the error happened so I can effectively reproduce it and resolve it. You can also report the error privately in the project support server.
 
-### Support Server
+### 🆘Support Server
 > https://discord.gg/39dfGrYNf9
 
 ## Reason for Creating this Project
