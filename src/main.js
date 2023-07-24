@@ -7,8 +7,6 @@ const Client = require("valorant-api-js");
 // const pregame = require("./pregame.js");
 // const menus = require("./menus.js");
 
-
-
 client.init({ region: "na" }).then(async () => {
   const session = await client.session.current();
   if (session.cxnState === "CLOSED") {
@@ -26,7 +24,6 @@ client.init({ region: "na" }).then(async () => {
       super();
       this.previousState = null;
     }
-
     watch(session, stateCallback) {
       const interval = setInterval(() => {
         client.session.current().then((currentState) => {
@@ -37,12 +34,10 @@ client.init({ region: "na" }).then(async () => {
           }
         });
       }, 1000);
-
       // Stop watching when the session is closed
       const closeCallback = () => {
         clearInterval(interval);
       };
-
       // Return the close callback to allow external cleanup if needed
       return closeCallback;
     }
@@ -58,7 +53,7 @@ client.init({ region: "na" }).then(async () => {
     
     // Watch for state changes
     const closeCallback = listener.watch(session, async (newLoopState) => {
-      console.log('Loop state changed:', newLoopState);
+      // console.log('Loop state changed:', newLoopState);
     
       // Check if the new state is no longer MENUS
       if (newLoopState == 'PREGAME') {
@@ -67,15 +62,9 @@ client.init({ region: "na" }).then(async () => {
       } else if(newLoopState == 'INGAME') {
           closeCallback();
           await ingame()
-      }
-    
-    
+      }    
     });
-        
     }
-
-
-
 /**
  * @PreGame Function
  */
@@ -94,7 +83,9 @@ async function pregame() {
         PlayerIdentity.AccountLevel,
       ]
     );
-  
+
+    const playersExtractedPuuids = playersExtracted.map((player) => player[0]);
+
     /**
      *
      * @notation Valorant-Api.com API but with a Wrapper because I'm too lazy to use fetch/axios
@@ -115,14 +106,20 @@ async function pregame() {
     allAgents.data.forEach((agent) => {
       characterData[agent.uuid] = agent.displayName;
     });
-  
-    const p = await client.chat.getAllParticipants();
+
+    const p = await client.chat.getAllParticipants()
     const AllPlayers = p.participants;
     const filteredPlayers = AllPlayers.filter(
       (player, index) =>
-        AllPlayers.findIndex((p) => p.puuid === player.puuid) === index
+        AllPlayers.findIndex((p) => p.puuid[0] === player.puuid[0]) === index
     );
-    const extractedData = filteredPlayers.map(
+
+    const filtered = filteredPlayers.filter((player) =>
+  playersExtractedPuuids.includes(player.puuid)
+  );
+
+
+    const extractedData = filtered.map(
       ({ game_name, game_tag, puuid }) => [`${game_name}#${game_tag}`, puuid]
     );
     playersExtracted.forEach(([subject, teamID, characterID, accountLevel]) => {
@@ -222,7 +219,7 @@ async function pregame() {
   
     // Watch for state changes
     const closeCallback = listener.watch(session, async (newLoopState) => {
-      console.log("Loop state changed:", newLoopState);
+      // console.log("Loop state changed:", newLoopState);
   
       // Check if the new state is no longer MENUS
       if (newLoopState == "MENUS") {
@@ -251,6 +248,8 @@ async function ingame() {
       PlayerIdentity.AccountLevel,
     ]
   );
+  const playersExtractedPuuids = playersExtracted.map((player) => player[0]);
+
 
   /**
    *
@@ -276,13 +275,19 @@ async function ingame() {
     characterData[agent.uuid] = agent.displayName;
   });
 
-  const p = await client.chat.getAllParticipants();
+  const p = await client.chat.getAllParticipants()
   const AllPlayers = p.participants;
   const filteredPlayers = AllPlayers.filter(
-    (player, index) =>
-      AllPlayers.findIndex((p) => p.puuid === player.puuid) === index
+    (player, index) => 
+    
+      AllPlayers.findIndex((p) => p.puuid === player.puuid) === index 
   );
-  const extractedData = filteredPlayers.map(
+
+  const filtered = filteredPlayers.filter((player) =>
+  playersExtractedPuuids.includes(player.puuid)
+);
+
+  const extractedData = filtered.map(
     ({ game_name, game_tag, puuid }) => [`${game_name}#${game_tag}`, puuid]
   );
   playersExtracted.forEach(([subject, teamID, characterID, accountLevel]) => {
@@ -297,6 +302,7 @@ async function ingame() {
       ];
     }
   });
+
 
   /**
         Change CharacterID to CharacterName / Real Agent Name
@@ -382,7 +388,7 @@ async function ingame() {
 
   // Watch for state changes
   const closeCallback = listener.watch(session, async (newLoopState) => {
-    console.log("Loop state changed:", newLoopState);
+    // console.log("Loop state changed:", newLoopState);
 
     // Check if the new state is no longer MENUS
     if (newLoopState == "MENUS") {
