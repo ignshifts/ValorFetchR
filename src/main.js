@@ -2,6 +2,31 @@ const { ValClient, LiveGame } = require("valclient.js");
 const client = new ValClient();
 const Table = require("table");
 const Client = require("valorant-api-js");
+const colors = require("colors");
+const fs = require("fs");
+const agents = require('./agents.json');
+
+// 
+const rankColorsJson = fs.readFileSync("./src/ranks.json");
+const rankColors = JSON.parse(rankColorsJson);
+const customColors = {
+  Gray: (text) => `\x1b[90m${text}\x1b[0m`, // Gray
+  Bronze: (text) => `\x1b[33m${text}\x1b[0m`, // Bronze (Yellow)
+  Silver: (text) => `\x1b[36m${text}\x1b[0m`, // Silver (Cyan)
+  Gold: (text) => `\x1b[33m${text}\x1b[0m`, // Gold (Yellow)
+  Blue: (text) => `\x1b[34m${text}\x1b[0m`, // Blue
+  Purple: (text) => `\x1b[35m${text}\x1b[0m`, // Purple (Magenta)
+  Green: (text) => `\x1b[32m${text}\x1b[0m`, // Green
+  Red: (text) => `\x1b[31m${text}\x1b[0m`, // Red
+  Yellow: (text) => `\x1b[33m${text}\x1b[0m`, // Yellow
+  Orange: (text) => `\x1b[38;5;202m${text}\x1b[0m`, // Orange
+  Teal: (text) => `\x1b[38;5;31m${text}\x1b[0m`, // Teal
+  Cyan: (text) => `\x1b[36m${text}\x1b[0m`, // Cyan
+  White: (text) => `\x1b[37m${text}\x1b[0m`, // White
+  "Light Blue": (text) => `\x1b[38;5;39m${text}\x1b[0m`, // Light Blue
+  "Dark Blue": (text) => `\x1b[38;5;20m${text}\x1b[0m`, // Dark Blue
+};
+
 // States
 // const ingame = require("./live.js");
 // const pregame = require("./pregame.js");
@@ -70,6 +95,18 @@ client.init({ region: "na" }).then(async () => {
  */
 
 async function pregame() {
+  const listener = new SessionStateListener();
+
+  const closeCallback = listener.watch(session, async (newLoopState) => {
+
+    if (newLoopState == "MENUS") {
+      closeCallback();
+      await menus();
+    } else if (newLoopState == "INGAME") {
+      closeCallback();
+      await ingame();
+    } else if (newLoopState == "PREGAME") {
+
     const data = await client.pre_game.details();
     const players = data.AllyTeam;
     console.log(players.Players.length);
@@ -138,6 +175,8 @@ async function pregame() {
     /**
                Change CharacterID to CharacterName / Real Agent Name
                */
+
+
     extractedData.forEach((row) => {
       const characterID = row[3];
   
@@ -194,14 +233,38 @@ async function pregame() {
       "PUUID",
     ];
   
+  
+    const agentColors = {};
+    agents.agents.forEach(agent => {
+      agentColors[agent.name.toUpperCase()] = agent.color;
+    });
+    
     const tableData = extractedData.map(([name, puuid, team, agent, level]) => {
       const mmrDataEntry = mmrData[puuid];
-      const rank = mmrDataEntry ? mmrDataEntry.rank : "";
+      const rank = mmrDataEntry ? mmrDataEntry.rank.toUpperCase() : "";
       const rr = mmrDataEntry ? mmrDataEntry.rr : "";
-      return [team, agent, name, rank, rr, level, puuid];
+    
+      let coloredName = name; // Default to name
+      let coloredTeam = team;
+    
+      if (team === "Blue") {
+        coloredName = customColors.Blue(name);
+        coloredTeam =  customColors.Blue("Defenders");
+      } else if (team === "Red") {
+        coloredName = customColors.Red(name);
+        coloredTeam = customColors.Red("Attackers");
+      }
+    
+      const rankColor = rankColors[rank] || "White";
+      const coloredRank = customColors[rankColor](rank);
+    
+      const agentColor = agentColors[agent.toUpperCase()] || "White";
+      const coloredAgent = customColors[agentColor](agent);
+      return [coloredTeam, coloredAgent, coloredName, coloredRank, rr, level, puuid];
     });
-  
-    // make sure everyone on the same team is grouped together
+   
+
+    //Same Team Grouping
     tableData.sort((a, b) => {
       const teamA = a[0];
       const teamB = b[0];
@@ -209,10 +272,19 @@ async function pregame() {
       if (teamA > teamB) return 1;
       return 0;
     });
-  
-    const table = [tableHeaders, ...tableData];
-    const output = Table.table(table);
-  
+    
+    // const table = [tableHeaders, ...tableData];
+    // const output = Table.table(table);
+const table = [tableHeaders, ...tableData];
+const config = {
+  header: {
+    alignment: 'center',
+    content: `\x1b[36mPre Game\x1b`,
+  },
+}
+
+const output = Table.table(table, config);
+
     console.log(output);
   
     const listener = new SessionStateListener();
@@ -230,6 +302,8 @@ async function pregame() {
         await ingame();
       }
     });
+}
+  });
 }
 
 /**
@@ -249,7 +323,6 @@ async function ingame() {
     ]
   );
   const playersExtractedPuuids = playersExtracted.map((player) => player[0]);
-
 
   /**
    *
@@ -363,14 +436,36 @@ async function ingame() {
     "PUUID",
   ];
 
+  const agentColors = {};
+  agents.agents.forEach(agent => {
+    agentColors[agent.name.toUpperCase()] = agent.color;
+  });
+  
   const tableData = extractedData.map(([name, puuid, team, agent, level]) => {
     const mmrDataEntry = mmrData[puuid];
-    const rank = mmrDataEntry ? mmrDataEntry.rank : "";
+    const rank = mmrDataEntry ? mmrDataEntry.rank.toUpperCase() : "";
     const rr = mmrDataEntry ? mmrDataEntry.rr : "";
-    return [team, agent, name, rank, rr, level, puuid];
+  
+    let coloredName = name; // Default to name
+    let coloredTeam = team;
+  
+    if (team === "Blue") {
+      coloredName = customColors.Blue(name);
+      coloredTeam =  customColors.Blue("Defenders");
+    } else if (team === "Red") {
+      coloredName = customColors.Red(name);
+      coloredTeam = customColors.Red("Attackers");
+    }
+  
+    const rankColor = rankColors[rank] || "White";
+    const coloredRank = customColors[rankColor](rank);
+  
+    const agentColor = agentColors[agent.toUpperCase()] || "White";
+    const coloredAgent = customColors[agentColor](agent);
+    return [coloredTeam, coloredAgent, coloredName, coloredRank, rr, level, puuid];
   });
 
-  // make sure everyone on the same team is grouped together
+  // Same Team Grouping
   tableData.sort((a, b) => {
     const teamA = a[0];
     const teamB = b[0];
@@ -380,8 +475,14 @@ async function ingame() {
   });
 
   const table = [tableHeaders, ...tableData];
-  const output = Table.table(table);
-
+  const config = {
+    header: {
+      alignment: 'center',
+      content: `\x1b[31mLive Game\x1b[0m`,
+    },
+  }
+  const output = Table.table(table, config);
+  
   console.log(output);
 
   const listener = new SessionStateListener();

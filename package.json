@@ -4,7 +4,9 @@
   "description": "",
   "main": "main.js",
   "pkg": {
-    "assets": ["valorfetch.ico"]
+    "assets": [
+      "valorfetch.ico"
+    ]
   },
   "dependencies": {
     "app-builder": "^7.0.4",
@@ -169,9 +171,10 @@
     "yauzl": "^2.10.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node /src/main.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Shifts",
   "license": "ISC"
 }
