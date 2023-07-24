@@ -1,0 +1,85 @@
+{
+    "agents": [
+      {
+        "name": "Brimstone",
+        "color": "Orange"
+      },
+      {
+        "name": "Viper",
+        "color": "Green"
+      },
+      {
+        "name": "Omen",
+        "color": "Light Blue"
+      },
+      {
+        "name": "Killjoy",
+        "color": "Yellow"
+      },
+      {
+        "name": "Cypher",
+        "color": "Teal"
+      },
+      {
+        "name": "Sova",
+        "color": "Cyan"
+      },
+      {
+        "name": "Sage",
+        "color": "White"
+      },
+      {
+        "name": "Phoenix",
+        "color": "Red"
+      },
+      {
+        "name": "Jett",
+        "color": "White"
+      },
+      {
+        "name": "Reyna",
+        "color": "Purple"
+      },
+      {
+        "name": "Breach",
+        "color": "Yellow"
+      },
+      {
+        "name": "Skye",
+        "color": "Green"
+      },
+      {
+        "name": "Yoru",
+        "color": "Dark Blue"
+      },
+      {
+        "name": "Astra",
+        "color": "Purple"
+      },
+      {
+        "name": "Chamber",
+        "color": "Silver"
+      },
+      {
+        "name": "KAY/O",
+        "color": "Black"
+      },
+      {
+        "name": "Raze",
+        "color": "Brown"
+      },
+      {
+        "name": "Deadlock",
+        "color": "White"
+      },
+      {
+        "name": "Neon",
+        "color": "Blue"
+      },
+      {
+        "name": "Gekko",
+        "color": "Green"
+      }
+    ]
+  }
+  
