@@ -2,14 +2,35 @@ const { ValClient, LiveGame } = require("valclient.js");
 const client = new ValClient();
 const Table = require("table");
 const Client = require("valorant-api-js");
-const colors = require("colors");
 const fs = require("fs");
 const agents = require('./agents.json');
+const ranks = require('./ranks.json');
+const config = require('./config.json');
+if(!config.region) { return console.log('Please enter a reason in the config.json file')}
 
-// 
-const rankColorsJson = fs.readFileSync("./src/ranks.json");
-const rankColors = JSON.parse(rankColorsJson);
+
+// const rankColorsJson = fs.readFileSync("./src/ranks.json");
+// const rankColors = JSON.parse(rankColorsJson);
+// const customColors = {
+//   Gray: (text) => `\x1b[90m${text}\x1b[0m`, // Gray
+//   Bronze: (text) => `\x1b[33m${text}\x1b[0m`, // Bronze (Yellow)
+//   Silver: (text) => `\x1b[36m${text}\x1b[0m`, // Silver (Cyan)
+//   Gold: (text) => `\x1b[33m${text}\x1b[0m`, // Gold (Yellow)
+//   Blue: (text) => `\x1b[34m${text}\x1b[0m`, // Blue
+//   Purple: (text) => `\x1b[35m${text}\x1b[0m`, // Purple (Magenta)
+//   Green: (text) => `\x1b[32m${text}\x1b[0m`, // Green
+//   Red: (text) => `\x1b[31m${text}\x1b[0m`, // Red
+//   Yellow: (text) => `\x1b[33m${text}\x1b[0m`, // Yellow
+//   Orange: (text) => `\x1b[38;5;202m${text}\x1b[0m`, // Orange
+//   Teal: (text) => `\x1b[38;5;31m${text}\x1b[0m`, // Teal
+//   Cyan: (text) => `\x1b[36m${text}\x1b[0m`, // Cyan
+//   White: (text) => `\x1b[37m${text}\x1b[0m`, // White
+//   "Light Blue": (text) => `\x1b[38;5;39m${text}\x1b[0m`, // Light Blue
+//   "Dark Blue": (text) => `\x1b[38;5;20m${text}\x1b[0m`, // Dark Blue
+// };
+
 const customColors = {
+  // Ranks
   Gray: (text) => `\x1b[90m${text}\x1b[0m`, // Gray
   Bronze: (text) => `\x1b[33m${text}\x1b[0m`, // Bronze (Yellow)
   Silver: (text) => `\x1b[36m${text}\x1b[0m`, // Silver (Cyan)
@@ -19,11 +40,15 @@ const customColors = {
   Green: (text) => `\x1b[32m${text}\x1b[0m`, // Green
   Red: (text) => `\x1b[31m${text}\x1b[0m`, // Red
   Yellow: (text) => `\x1b[33m${text}\x1b[0m`, // Yellow
+
+  // Agents
   Orange: (text) => `\x1b[38;5;202m${text}\x1b[0m`, // Orange
+  Green: (text) => `\x1b[32m${text}\x1b[0m`, // Green
+  "Light Blue": (text) => `\x1b[36m${text}\x1b[0m`, // Light Blue
+  Yellow: (text) => `\x1b[33m${text}\x1b[0m`, // Yellow
   Teal: (text) => `\x1b[38;5;31m${text}\x1b[0m`, // Teal
   Cyan: (text) => `\x1b[36m${text}\x1b[0m`, // Cyan
   White: (text) => `\x1b[37m${text}\x1b[0m`, // White
-  "Light Blue": (text) => `\x1b[38;5;39m${text}\x1b[0m`, // Light Blue
   "Dark Blue": (text) => `\x1b[38;5;20m${text}\x1b[0m`, // Dark Blue
 };
 
@@ -32,7 +57,7 @@ const customColors = {
 // const pregame = require("./pregame.js");
 // const menus = require("./menus.js");
 
-client.init({ region: "na" }).then(async () => {
+client.init({ region: config.region }).then(async () => {
   const session = await client.session.current();
   if (session.cxnState === "CLOSED") {
     return console.log("VALORANT is closed, please open VALORANT.");
@@ -183,7 +208,7 @@ async function pregame() {
       if (characterData.hasOwnProperty(characterID)) {
         const displayName = characterData[characterID];
         row[3] = displayName; // Replace the characterID with the displayName
-      }
+      } 
     });
   
     const mmrPromises = extractedData.map(async ([, puuid, , ,]) => {
@@ -236,7 +261,7 @@ async function pregame() {
   
     const agentColors = {};
     agents.agents.forEach(agent => {
-      agentColors[agent.name.toUpperCase()] = agent.color;
+      agentColors[agent.name.toUpperCase()] = customColors[agent.color];
     });
     
     const tableData = extractedData.map(([name, puuid, team, agent, level]) => {
@@ -249,20 +274,20 @@ async function pregame() {
     
       if (team === "Blue") {
         coloredName = customColors.Blue(name);
-        coloredTeam =  customColors.Blue("Defenders");
+        coloredTeam = customColors.Blue("Defenders");
       } else if (team === "Red") {
         coloredName = customColors.Red(name);
         coloredTeam = customColors.Red("Attackers");
       }
     
-      const rankColor = rankColors[rank] || "White";
+      const rankColor = ranks[rank] || "White";
       const coloredRank = customColors[rankColor](rank);
     
-      const agentColor = agentColors[agent.toUpperCase()] || "White";
-      const coloredAgent = customColors[agentColor](agent);
+      const agentColor = agentColors[agent.toUpperCase()] || customColors.White;
+      const coloredAgent = agentColor(agent);
+    
       return [coloredTeam, coloredAgent, coloredName, coloredRank, rr, level, puuid];
     });
-   
 
     //Same Team Grouping
     tableData.sort((a, b) => {
@@ -380,15 +405,18 @@ async function ingame() {
   /**
         Change CharacterID to CharacterName / Real Agent Name
          */
-  extractedData.forEach((row) => {
-    const characterID = row[3];
 
-    if (characterData.hasOwnProperty(characterID)) {
-      const displayName = characterData[characterID];
-      row[3] = displayName; // Replace the characterID with the displayName
-    }
-  });
-
+        extractedData.forEach((row) => {
+          const characterID = row[3];
+      
+          if (characterData.hasOwnProperty(characterID)) {
+            const displayName = characterData[characterID];
+            row[3] = displayName; // Replace the characterID with the displayName
+          } else {
+            console.log(`CharacterID "${characterID}" not found in characterData.`);
+            console.log(`Row data: ${row}`);
+          }
+        });
   const mmrPromises = extractedData.map(async ([, puuid, , ,]) => {
     const mmrData = await client.pvp.mmr(puuid);
     return mmrData;
@@ -438,7 +466,7 @@ async function ingame() {
 
   const agentColors = {};
   agents.agents.forEach(agent => {
-    agentColors[agent.name.toUpperCase()] = agent.color;
+    agentColors[agent.name.toUpperCase()] = customColors[agent.color];
   });
   
   const tableData = extractedData.map(([name, puuid, team, agent, level]) => {
@@ -451,17 +479,18 @@ async function ingame() {
   
     if (team === "Blue") {
       coloredName = customColors.Blue(name);
-      coloredTeam =  customColors.Blue("Defenders");
+      coloredTeam = customColors.Blue("Defenders");
     } else if (team === "Red") {
       coloredName = customColors.Red(name);
       coloredTeam = customColors.Red("Attackers");
     }
   
-    const rankColor = rankColors[rank] || "White";
+    const rankColor = ranks[rank] || "White";
     const coloredRank = customColors[rankColor](rank);
   
-    const agentColor = agentColors[agent.toUpperCase()] || "White";
-    const coloredAgent = customColors[agentColor](agent);
+    const agentColor = agentColors[agent.toUpperCase()] || customColors.White;
+    const coloredAgent = agentColor(agent);
+  
     return [coloredTeam, coloredAgent, coloredName, coloredRank, rr, level, puuid];
   });
 
