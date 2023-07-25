@@ -6,7 +6,8 @@ const fs = require("fs");
 const agents = require('./agents.json');
 const ranks = require('./ranks.json');
 const config = require('./config.json');
-if(!config.region) { return console.log('Please enter a reason in the config.json file')}
+
+if(!config.region) return console.log('Please enter a region in the config.json file')
 
 
 // const rankColorsJson = fs.readFileSync("./src/ranks.json");
@@ -52,12 +53,21 @@ const customColors = {
   "Dark Blue": (text) => `\x1b[38;5;20m${text}\x1b[0m`, // Dark Blue
 };
 
+fs.readFile('config.json', 'utf-8', (err, data) => {
+  if (err) {
+    console.error('Error reading config.json:', err.message);
+    return;
+  } else {
+    const config = JSON.parse(data);
+    const region = config.region;
+
 // States
 // const ingame = require("./live.js");
 // const pregame = require("./pregame.js");
 // const menus = require("./menus.js");
 
-client.init({ region: config.region }).then(async () => {
+
+client.init({ region: region }).then(async () => {
   const session = await client.session.current();
   if (session.cxnState === "CLOSED") {
     return console.log("VALORANT is closed, please open VALORANT.");
@@ -537,4 +547,6 @@ async function ingame() {
   } else if (session.loopState == "INGAME") {
     await ingame();
   }
+});
+}
 });
