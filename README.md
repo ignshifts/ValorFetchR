@@ -6,7 +6,7 @@
 </p>
 
 <p align='center'>
-  <b>This project is a Work-In-Progress, there will be bugs and there are bugs. The project is nowhere close to being finished and is actively being developed by myself at the time I am writing this 🙂
+  <b>This project is a Work-In-Progress, there will be bugs and there are bugs. The project is nowhere close to being finished and is actively being developed by myself at the time I am writing this. Keep in mind new additions for the project may take longer than usual and may not be as frequent.
 </b><br>
 </p>
 
